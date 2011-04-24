@@ -22,8 +22,7 @@ function love.load()
 	track_frame = 0
 	nextCloud = 0
 
-	trains = {}
-	table.insert(trains,Train.create(135,1))
+	train = Train.create(135,1)
 end
 
 function love.update(dt)
@@ -40,11 +39,10 @@ function love.update(dt)
 	end
 	
 	-- Update trains
-	for i,v in ipairs(trains) do
-		Train.update(v,dt)
-		if v.x < -150 then
-			table.remove(trains,i)
-		end
+	Train.update(train,dt)
+	if train.x < -200 then
+		train.x = WIDTH
+		train.speed = math.random(135,200)
 	end
 	
 	-- Move tracks
@@ -59,9 +57,7 @@ function love.draw()
 
 	-- Draw background clouds
 	for i,v in ipairs(clouds) do
-		if v.speed < 37 then
-			Cloud.draw(v)
-		end
+		if v.speed < 37 then Cloud.draw(v) end
 	end
 
 	-- Draw player
@@ -70,15 +66,11 @@ function love.draw()
 
 	-- Draw foreground clouds
 	for i,v in ipairs(clouds) do
-		if v.speed >= 37 then
-			Cloud.draw(v)
-		end
+		if v.speed >= 37 then Cloud.draw(v) end
 	end
 
-	-- Draw trains
-	for i,v in ipairs(trains) do
-		Train.draw(v)
-	end
+	-- Draw train
+	Train.draw(train)
 
 	-- Draw railroad tracks
 	for i=0,2 do
