@@ -1,14 +1,35 @@
 Player = {}
 
+JUMP_POWER = -300
+GRAVITY = 1000
+
 function Player.create()
-	local p = {}
-	p.frame = 0
-	p.x = 14
-	p.y = 71
-	return p
+	local self = {}
+	self.frame = 0
+	self.x = 14
+	self.y = 71
+	self.yspeed = 0
+	self.onGround = true
+	return self
 end
 
 function Player.update(self,dt)
+	-- Check keyboard input
+	if love.keyboard.isDown(' ') and self.onGround == true then
+		self.yspeed = JUMP_POWER
+		self.onGround = false
+	end
+
+	-- Update position
+	self.y = self.y + self.yspeed*dt
+	if self.y > 71 then
+		self.y = 71
+		self.yspeed = 0
+		self.onGround = true
+	end
+	self.yspeed = self.yspeed + dt*GRAVITY
+
+	-- Update walk frame
 	self.frame = self.frame + 20*dt
 	if self.frame >= 6 then
 		self.frame = 0

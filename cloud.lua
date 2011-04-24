@@ -1,3 +1,5 @@
+CLOUD_SPAWN_RATE = 0.25
+MAX_CLOUDS = 10
 Cloud = {}
 
 function Cloud.create(y,size,type)
@@ -30,13 +32,13 @@ end
 function spawnClouds(dt)
 	nextCloud = nextCloud - dt
 	if nextCloud <= 0 then
-		if math.random(4) == 1 then
+		if #clouds < MAX_CLOUDS then
 			if math.random(2) == 1 then -- small cloud
-				table.insert(clouds,Cloud.create(math.random(30),1,math.random(0,2)))
+				table.insert(clouds,Cloud.create(math.random(32),1,math.random(0,2)))
 			else -- large cloud
-				table.insert(clouds,Cloud.create(math.random(30),2,math.random(0,1)))
+				table.insert(clouds,Cloud.create(math.random(32),2,math.random(0,1)))
 			end
 		end
-		nextCloud = CLOUD_SPAWN_RATE
+		nextCloud = math.random()*1.5
 	end
 end
