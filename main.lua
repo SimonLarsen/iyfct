@@ -18,7 +18,6 @@ function love.load()
 
 	pl = Player.create()
 	clouds = {}
-	table.insert(clouds,Cloud.create(0,1,1))
 	nextCloud = 0
 end
 
@@ -28,6 +27,9 @@ function love.update(dt)
 	spawnClouds(dt)
 	for i,v in ipairs(clouds) do
 		Cloud.update(v,dt)
+		if v.x < -32 then
+			table.remove(clouds,i)
+		end
 	end
 end
 
