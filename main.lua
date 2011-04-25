@@ -22,7 +22,8 @@ function love.load()
 	track_frame = 0
 	nextCloud = 0
 
-	train = Train.create(135,1)
+	train = Train.create(10,1)
+	train.x = -200
 end
 
 function love.update(dt)
@@ -42,8 +43,11 @@ function love.update(dt)
 	Train.update(train,dt)
 	if train.x < -200 then
 		train.x = WIDTH
-		train.speed = math.random(135,200)
+		train.speed = math.random(150,200)
+		train.type = math.random(1,2)
 	end
+
+	Player.collideWithTrain(pl)
 	
 	-- Move tracks
 	track_frame = track_frame + dt*150
@@ -60,6 +64,9 @@ function love.draw()
 		if v.speed < 37 then Cloud.draw(v) end
 	end
 
+	-- Draw train
+	Train.draw(train)
+
 	-- Draw player
 	love.graphics.setColor(255,255,255,255)
 	Player.draw(pl)
@@ -68,9 +75,6 @@ function love.draw()
 	for i,v in ipairs(clouds) do
 		if v.speed >= 37 then Cloud.draw(v) end
 	end
-
-	-- Draw train
-	Train.draw(train)
 
 	-- Draw railroad tracks
 	for i=0,2 do
