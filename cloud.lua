@@ -7,7 +7,7 @@ function Cloud.create(y,size,type)
 	self.x = WIDTH
 	self.y = y
 	self.size = size
-	self.speed = math.random(25,50)
+	self.speed = global_speed*math.random(25,50)
 	self.type = type
 	self.alive = true
 	return self

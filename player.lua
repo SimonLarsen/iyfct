@@ -37,6 +37,9 @@ function Player.update(self,dt)
 
 	elseif self.status == 1 then
 		self.x = train.x-10
+	
+	elseif self.status == 3 then
+		self.y = 66
 	end
 
 	-- Update walk frame
@@ -53,22 +56,32 @@ function Player.draw(self)
 end
 
 function Player.collideWithTrain(self)
-	if train.type == 1 then -- closed train
+	if self.status == 0 then
 		-- check collision with front of train
 		if Player.collideWithPoint(self,train.x+4,train.y+10) or
 		Player.collideWithPoint(self,train.x+2,train.y+24) then
-			self.status = 1 -- hit by train	
-			if self.y < train.y-9 then
-				self.y = train.y-9
+			if train.type == 1 then -- hit by closed train
+				self.status = 1 -- hit by train	
+				if self.y < train.y-9 then
+					self.y = train.y-9
+				end
+			elseif train.type == 2 then -- hit by open train
+				self.status = 3
+			end
+		end
+		-- check if landed on train
+		if train.x < self.x and train.x+125 > self.x then
+			if self.y > 35 then
+				self.y = 35
+				self.yspeed = 0
+				self.onGround = true
 			end
 		end
 	end
-	-- check if landed on train
-	if train.x < self.x and train.x+125 > self.x then
-		if self.y > 35 then
-			self.y = 35
-			self.yspeed = 0
-			self.onGround = true
+
+	if self.status == 3 then
+		if self.x > train.x+135 then
+			self.status = 0
 		end
 	end
 end
@@ -85,5 +98,7 @@ end
 --[[ Status values:
 	0 = alive
 	1 = hit by train
-	2 = hit by bird?
+	2 = hit by bird
+	3 = inside train
+	4 = falling through ground
 --]]

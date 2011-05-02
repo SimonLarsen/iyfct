@@ -10,6 +10,8 @@ SCRNHEIGHT = HEIGHT*SCALE
 
 track_quad = love.graphics.newQuad(0,48,121,5,128,128)
 
+global_speed = 1.0
+
 function love.load()
 	love.graphics.setMode(SCRNWIDTH,SCRNHEIGHT,false)
 	love.graphics.setBackgroundColor(255,255,255)
@@ -23,7 +25,7 @@ function love.load()
 	nextCloud = 0
 
 	train = Train.create(10,1)
-	train.x = -200
+	train.x = -190
 end
 
 function love.update(dt)
@@ -43,17 +45,20 @@ function love.update(dt)
 	Train.update(train,dt)
 	if train.x < -200 then
 		train.x = WIDTH
-		train.speed = math.random(150,200)
+		train.speed = global_speed*math.random(TRAIN_MIN_SPEED,TRAIN_MAX_SPEED)
 		train.type = math.random(1,2)
 	end
 
 	Player.collideWithTrain(pl)
 	
 	-- Move tracks
-	track_frame = track_frame + dt*150
+	track_frame = track_frame + global_speed * dt * 150
 	if track_frame >= 11 then
 		track_frame = 0
 	end
+
+	-- Increase speed
+	global_speed = global_speed + 0.05*dt
 end
 
 function love.draw()

@@ -3,6 +3,9 @@ normal_train_quad = love.graphics.newQuad(0,0,132,36,256,256)
 open_train_quad = love.graphics.newQuad(0,48,146,36,256,256)
 inside_train_quad = love.graphics.newQuad(0,96,146,36,256,256)
 
+TRAIN_MIN_SPEED = 160
+TRAIN_MAX_SPEED = 220
+
 function Train.create(speed,type)
 	local self = {}
 	self.speed = speed
@@ -20,6 +23,10 @@ function Train.draw(self)
 	if self.type == 1 then -- closed train
 		love.graphics.drawq(imgTrains,normal_train_quad,self.x,self.y)
 	elseif self.type == 2 then -- open train from outside
-		love.graphics.drawq(imgTrains,open_train_quad,self.x-7,self.y)
+		if pl.status == 3 then
+			love.graphics.drawq(imgTrains,inside_train_quad,self.x-7,self.y)
+		else
+			love.graphics.drawq(imgTrains,open_train_quad,self.x-7,self.y)
+		end
 	end
 end
