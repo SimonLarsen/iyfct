@@ -16,7 +16,7 @@ function Train.create(speed,type)
 end
 
 function Train.update(self,dt)
-	self.x = self.x - self.speed*dt
+	self.x = self.x - self.speed*dt*global_speed
 end
 
 function Train.draw(self)

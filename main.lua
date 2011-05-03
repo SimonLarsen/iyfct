@@ -13,6 +13,7 @@ track_quad = love.graphics.newQuad(0,48,121,5,128,128)
 global_speed = 1.0
 
 function love.load()
+	math.randomseed(os.time())
 	love.graphics.setMode(SCRNWIDTH,SCRNHEIGHT,false)
 	love.graphics.setBackgroundColor(255,255,255)
 	love.graphics.setLineWidth(2)
@@ -24,7 +25,7 @@ function love.load()
 	track_frame = 0
 	nextCloud = 0
 
-	train = Train.create(10,1)
+	train = Train.create(10,math.random(1,2))
 	train.x = -190
 end
 
@@ -45,7 +46,7 @@ function love.update(dt)
 	Train.update(train,dt)
 	if train.x < -200 then
 		train.x = WIDTH
-		train.speed = global_speed*math.random(TRAIN_MIN_SPEED,TRAIN_MAX_SPEED)
+		train.speed = math.random(TRAIN_MIN_SPEED,TRAIN_MAX_SPEED)
 		train.type = math.random(1,2)
 	end
 
@@ -69,13 +70,6 @@ function love.draw()
 		if v.speed < 37 then Cloud.draw(v) end
 	end
 
-	-- Draw train
-	Train.draw(train)
-
-	-- Draw player
-	love.graphics.setColor(255,255,255,255)
-	Player.draw(pl)
-
 	-- Draw foreground clouds
 	for i,v in ipairs(clouds) do
 		if v.speed >= 37 then Cloud.draw(v) end
@@ -85,6 +79,13 @@ function love.draw()
 	for i=0,2 do
 		love.graphics.drawq(imgSprites,track_quad,i*121 - track_frame,92)
 	end
+
+	-- Draw train
+	Train.draw(train)
+
+	-- Draw player
+	love.graphics.setColor(255,255,255,255)
+	Player.draw(pl)
 end
 
 function loadResources()

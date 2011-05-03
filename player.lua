@@ -4,11 +4,12 @@ JUMP_POWER = -300
 GRAVITY = 1000
 PLAYER_WIDTH = 14
 PLAYER_HEIGHT = 21
+PLAYER_START_X = 64
 
 function Player.create()
 	local self = {}
 	self.frame = 0
-	self.x = 14
+	self.x = PLAYER_START_X
 	self.y = 71
 	self.yspeed = 0
 	self.onGround = true
@@ -26,20 +27,30 @@ function Player.update(self,dt)
 	self.onGround = false
 
 	-- Update position
-	if self.status == 0 then
-		self.y = self.y + self.yspeed*dt
+	self.y = self.y + self.yspeed*dt
+
+	if self.status == 0 then -- normal ourside
+		self.yspeed = self.yspeed + dt*GRAVITY
 		if self.y > 71 then
 			self.y = 71
 			self.yspeed = 0
 			self.onGround = true
 		end
-		self.yspeed = self.yspeed + dt*GRAVITY
 
-	elseif self.status == 1 then
-		self.x = train.x-10
 	
-	elseif self.status == 3 then
-		self.y = 66
+	elseif self.status == 3 then -- inside train
+		self.yspeed = self.yspeed + dt*GRAVITY
+		if self.y > 66 then
+			self.y = 66
+			self.yspeed = 0
+			self.onGround = true
+		elseif self.y < 60 then
+			self.y = 60
+			self.yspeed = 0
+		end
+
+	elseif self.status == 1 then -- hit by train
+		self.x = self.x - dt*300
 	end
 
 	-- Update walk frame
@@ -52,7 +63,11 @@ end
 function Player.draw(self)
 	local frame = 15*math.floor(self.frame)
 	local quad = love.graphics.newQuad(frame,0,15,21,128,128)
-	love.graphics.drawq(imgSprites,quad,self.x,self.y)
+	if self.status == 1 then
+		love.graphics.drawq(imgSprites,quad,self.x,self.y, -self.x/10, 1,1,7,10)
+	else
+		love.graphics.drawq(imgSprites,quad,self.x,self.y)
+	end
 end
 
 function Player.collideWithTrain(self)
@@ -61,10 +76,13 @@ function Player.collideWithTrain(self)
 		if Player.collideWithPoint(self,train.x+4,train.y+10) or
 		Player.collideWithPoint(self,train.x+2,train.y+24) then
 			if train.type == 1 then -- hit by closed train
+				print("Hit by train at global speed " .. global_speed)
 				self.status = 1 -- hit by train	
+				self.yspeed = -100
 				if self.y < train.y-9 then
 					self.y = train.y-9
 				end
+
 			elseif train.type == 2 then -- hit by open train
 				self.status = 3
 			end
