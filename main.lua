@@ -1,12 +1,15 @@
 require("player")
 require("cloud")
 require("train")
+require("tunnel")
 
 WIDTH = 300
 HEIGHT = 100
 SCALE = 2
 SCRNWIDTH = WIDTH*SCALE
 SCRNHEIGHT = HEIGHT*SCALE
+
+TRACK_SPEED = 150
 
 track_quad = love.graphics.newQuad(0,48,121,5,128,128)
 
@@ -25,7 +28,10 @@ function love.load()
 	track_frame = 0
 	nextCloud = 0
 
-	train = Train.create(10,math.random(1,2))
+	train = Train.create()
+	train.alive = false
+	tunnel = Tunnel.create()
+	tunnel.alive = false
 	train.x = -190
 end
 
@@ -44,22 +50,28 @@ function love.update(dt)
 	
 	-- Update trains
 	Train.update(train,dt)
-	if train.x < -200 then
-		train.x = WIDTH
-		train.speed = math.random(TRAIN_MIN_SPEED,TRAIN_MAX_SPEED)
-		train.type = math.random(1,2)
-	end
-
 	Player.collideWithTrain(pl)
 	
+	-- Update tunnel
+	Tunnel.update(tunnel,dt)
+	
 	-- Move tracks
-	track_frame = track_frame + global_speed * dt * 150
+	track_frame = track_frame + global_speed * dt * TRACK_SPEED
 	if track_frame >= 11 then
-		track_frame = 0
+		track_frame = track_frame % 11
 	end
 
 	-- Increase speed
 	global_speed = global_speed + 0.05*dt
+
+	-- Respawn train or tunnel
+	if train.alive == false and tunnel.alive == false then
+		if math.random(5) == 1 then -- spawn tunnel
+			tunnel = Tunnel.create()
+		else -- spawn train
+			train = Train.create()
+		end
+	end
 end
 
 function love.draw()
@@ -69,6 +81,9 @@ function love.draw()
 	for i,v in ipairs(clouds) do
 		if v.speed < 37 then Cloud.draw(v) end
 	end
+
+	-- Draw back of tunnel
+	Tunnel.drawBack(tunnel)
 
 	-- Draw foreground clouds
 	for i,v in ipairs(clouds) do
@@ -86,6 +101,9 @@ function love.draw()
 	-- Draw player
 	love.graphics.setColor(255,255,255,255)
 	Player.draw(pl)
+
+	-- Draw front of tunnel
+	Tunnel.drawFront(tunnel)
 end
 
 function loadResources()
@@ -94,4 +112,7 @@ function loadResources()
 	
 	imgTrains = love.graphics.newImage("gfx/trains.png")
 	imgTrains:setFilter("nearest","nearest")
+
+	imgTerrain = love.graphics.newImage("gfx/terrain.png")
+	imgTerrain:setFilter("nearest","nearest")
 end

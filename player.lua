@@ -71,6 +71,10 @@ function Player.draw(self)
 end
 
 function Player.collideWithTrain(self)
+	if train.alive == false then
+		return
+	end
+
 	if self.status == 0 then
 		-- check collision with front of train
 		if Player.collideWithPoint(self,train.x+4,train.y+10) or
