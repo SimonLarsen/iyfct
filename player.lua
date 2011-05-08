@@ -27,9 +27,8 @@ function Player.update(self,dt)
 	self.onGround = false
 
 	-- Update position
-	self.y = self.y + self.yspeed*dt
-
 	if self.status == 0 then -- normal ourside
+		self.y = self.y + self.yspeed*dt
 		self.yspeed = self.yspeed + dt*GRAVITY
 		if self.y > 71 then
 			self.y = 71
@@ -39,6 +38,7 @@ function Player.update(self,dt)
 
 	
 	elseif self.status == 3 then -- inside train
+		self.y = self.y + self.yspeed*dt
 		self.yspeed = self.yspeed + dt*GRAVITY
 		if self.y > 66 then
 			self.y = 66
@@ -50,7 +50,11 @@ function Player.update(self,dt)
 		end
 
 	elseif self.status == 1 then -- hit by train
+		self.y = self.y + self.yspeed*dt
 		self.x = self.x - dt*300
+	
+	elseif self.status == 5 then -- hit by mountain
+		self.x = self.x - global_speed * dt * TRACK_SPEED * 1.5
 	end
 
 	-- Update walk frame
@@ -63,9 +67,11 @@ end
 function Player.draw(self)
 	local frame = 15*math.floor(self.frame)
 	local quad = love.graphics.newQuad(frame,0,15,21,128,128)
-	if self.status == 1 then
+	if self.status == 0 then
+		love.graphics.drawq(imgSprites,quad,self.x,self.y)
+	elseif self.status == 1 or self.status == 5 then
 		love.graphics.drawq(imgSprites,quad,self.x,self.y, -self.x/10, 1,1,7,10)
-	else
+	else -- default case
 		love.graphics.drawq(imgSprites,quad,self.x,self.y)
 	end
 end
@@ -88,11 +94,14 @@ function Player.collideWithTrain(self)
 				end
 
 			elseif train.type == 2 then -- hit by open train
-				self.status = 3
+				if self.yspeed >= 0 then
+					self.status = 3
+				else
+					self.status = 1
+				end
 			end
-		end
 		-- check if landed on train
-		if train.x < self.x and train.x+125 > self.x then
+		elseif train.x < self.x and train.x+125 > self.x and self.yspeed > 0 then
 			if self.y > 35 then
 				self.y = 35
 				self.yspeed = 0
@@ -104,6 +113,19 @@ function Player.collideWithTrain(self)
 	if self.status == 3 then
 		if self.x > train.x+135 then
 			self.status = 0
+		end
+	end
+end
+
+function Player.collideWithTunnel(self)
+	if tunnel.alive == false then
+		return
+	end
+
+	if self.status == 0 then
+		if self.y < 47 and self.x < tunnel.x and
+		self.x > tunnel.x-16 then
+			self.status = 5
 		end
 	end
 end
@@ -122,5 +144,6 @@ end
 	1 = hit by train
 	2 = hit by bird
 	3 = inside train
-	4 = falling through ground
+	4 = falling through ground? UNUSED
+	5 = hit by mountain
 --]]

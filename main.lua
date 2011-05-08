@@ -54,6 +54,7 @@ function love.update(dt)
 	
 	-- Update tunnel
 	Tunnel.update(tunnel,dt)
+	Player.collideWithTunnel(pl)
 	
 	-- Move tracks
 	track_frame = track_frame + global_speed * dt * TRACK_SPEED
@@ -66,7 +67,7 @@ function love.update(dt)
 
 	-- Respawn train or tunnel
 	if train.alive == false and tunnel.alive == false then
-		if math.random(5) == 1 then -- spawn tunnel
+		if math.random(1,TUNNEL_PROBABILITY) == 1 then -- spawn tunnel
 			tunnel = Tunnel.create()
 		else -- spawn train
 			train = Train.create()
@@ -85,11 +86,6 @@ function love.draw()
 	-- Draw back of tunnel
 	Tunnel.drawBack(tunnel)
 
-	-- Draw foreground clouds
-	for i,v in ipairs(clouds) do
-		if v.speed >= 37 then Cloud.draw(v) end
-	end
-
 	-- Draw railroad tracks
 	for i=0,2 do
 		love.graphics.drawq(imgSprites,track_quad,i*121 - track_frame,92)
@@ -104,6 +100,11 @@ function love.draw()
 
 	-- Draw front of tunnel
 	Tunnel.drawFront(tunnel)
+
+	-- Draw foreground clouds
+	for i,v in ipairs(clouds) do
+		if v.speed >= 37 then Cloud.draw(v) end
+	end
 end
 
 function loadResources()
