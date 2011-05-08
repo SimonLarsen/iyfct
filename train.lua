@@ -6,13 +6,17 @@ inside_train_quad = love.graphics.newQuad(0,96,146,36,256,256)
 TRAIN_MIN_SPEED = 160
 TRAIN_MAX_SPEED = 220
 
-function Train.create()
-	return Train.createWithParams(math.random(TRAIN_MIN_SPEED,TRAIN_MAX_SPEED),math.random(1,2))
+function Train.createRandom()
+	if math.random(1,3) == 1 then
+		return Train.create(2)
+	else
+		return Train.create(1)
+	end
 end
 
-function Train.createWithParams(speed,type)
+function Train.create(type)
 	local self = {}
-	self.speed = speed
+	self.speed = math.random(TRAIN_MIN_SPEED,TRAIN_MAX_SPEED)
 	self.x = WIDTH
 	self.y = 56
 	self.type = type
@@ -38,10 +42,10 @@ function Train.draw(self)
 
 	if self.type == 1 then -- closed train
 		love.graphics.drawq(imgTrains,normal_train_quad,self.x,self.y)
-	elseif self.type == 2 then -- open train from outside
-		if pl.status == 3 then
+	elseif self.type == 2 then -- open train
+		if pl.status == 3 then -- inside
 			love.graphics.drawq(imgTrains,inside_train_quad,self.x-7,self.y)
-		else
+		else -- outside
 			love.graphics.drawq(imgTrains,open_train_quad,self.x-7,self.y)
 		end
 	end

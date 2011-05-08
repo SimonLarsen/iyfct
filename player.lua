@@ -35,7 +35,6 @@ function Player.update(self,dt)
 			self.yspeed = 0
 			self.onGround = true
 		end
-
 	
 	elseif self.status == 3 then -- inside train
 		self.y = self.y + self.yspeed*dt
@@ -69,8 +68,10 @@ function Player.draw(self)
 	local quad = love.graphics.newQuad(frame,0,15,21,128,128)
 	if self.status == 0 then
 		love.graphics.drawq(imgSprites,quad,self.x,self.y)
+
 	elseif self.status == 1 or self.status == 5 then
 		love.graphics.drawq(imgSprites,quad,self.x,self.y, -self.x/10, 1,1,7,10)
+
 	else -- default case
 		love.graphics.drawq(imgSprites,quad,self.x,self.y)
 	end

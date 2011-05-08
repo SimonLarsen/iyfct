@@ -6,27 +6,27 @@ require("tunnel")
 WIDTH = 300
 HEIGHT = 100
 SCALE = 2
-SCRNWIDTH = WIDTH*SCALE
-SCRNHEIGHT = HEIGHT*SCALE
 
 TRACK_SPEED = 150
 
 track_quad = love.graphics.newQuad(0,48,121,5,128,128)
 
-global_speed = 1.0
 
 function love.load()
 	math.randomseed(os.time())
-	love.graphics.setMode(SCRNWIDTH,SCRNHEIGHT,false)
 	love.graphics.setBackgroundColor(255,255,255)
-	love.graphics.setLineWidth(2)
 
 	loadResources()
+	restart()
+	updateScale()
+end
 
+function restart()
 	pl = Player.create()
 	clouds = {}
 	track_frame = 0
 	nextCloud = 0
+	global_speed = 1.0
 
 	train = Train.create()
 	train.alive = false
@@ -66,11 +66,17 @@ function love.update(dt)
 	global_speed = global_speed + 0.05*dt
 
 	-- Respawn train or tunnel
-	if train.alive == false and tunnel.alive == false then
-		if math.random(1,TUNNEL_PROBABILITY) == 1 then -- spawn tunnel
-			tunnel = Tunnel.create()
-		else -- spawn train
-			train = Train.create()
+	if train.alive == false then
+		if tunnel.alive == false then
+			if math.random(1,TUNNEL_PROBABILITY) == 1 then -- spawn tunnel
+				tunnel = Tunnel.create()
+			else -- spawn train
+				train = Train.createRandom()
+			end
+		else
+			if math.random(1,32) == 1 then
+				train = Train.create(2)
+			end
 		end
 	end
 end
@@ -116,4 +122,30 @@ function loadResources()
 
 	imgTerrain = love.graphics.newImage("gfx/terrain.png")
 	imgTerrain:setFilter("nearest","nearest")
+end
+
+function love.keypressed(key,unicode)
+	if key == ' ' then -- will be space most of the time
+		return         -- avoid unnecessary checks
+	elseif key == 'r' or key == "return" then
+		restart()
+	elseif key == '1' then
+		SCALE = 1
+		updateScale()
+	elseif key == '2' then
+		SCALE = 2
+		updateScale()
+	elseif key == '3' then
+		SCALE = 3
+		updateScale()
+	elseif key == '4' then
+		SCALE = 4
+		updateScale()
+	end
+end
+
+function updateScale()
+	SCRNWIDTH = WIDTH*SCALE
+	SCRNHEIGHT = HEIGHT*SCALE
+	love.graphics.setMode(SCRNWIDTH,SCRNHEIGHT,false)
 end
