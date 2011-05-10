@@ -4,7 +4,7 @@ open_train_quad = love.graphics.newQuad(0,48,146,36,256,256)
 inside_train_quad = love.graphics.newQuad(0,96,146,36,256,256)
 
 TRAIN_MIN_SPEED = 160
-TRAIN_MAX_SPEED = 220
+TRAIN_MAX_SPEED = 200
 
 function Train.createRandom()
 	if math.random(1,3) == 1 then

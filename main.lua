@@ -2,21 +2,23 @@ require("player")
 require("cloud")
 require("train")
 require("tunnel")
+require("bird")
 
 WIDTH = 300
 HEIGHT = 100
 SCALE = 2
 
 TRACK_SPEED = 150
+SPEED_INCREASE = 0.04
 
 track_quad = love.graphics.newQuad(0,48,121,5,128,128)
-
 
 function love.load()
 	math.randomseed(os.time())
 	love.graphics.setBackgroundColor(255,255,255)
 
 	loadResources()
+	love.graphics.setFont(imgfont)
 	restart()
 	updateScale()
 end
@@ -24,15 +26,19 @@ end
 function restart()
 	pl = Player.create()
 	clouds = {}
+	next_cloud = 0
+	birds = {}
+	next_bird = 1
+	global_speed = 1.7 
 	track_frame = 0
-	nextCloud = 0
-	global_speed = 1.0
 
 	train = Train.create()
 	train.alive = false
 	tunnel = Tunnel.create()
 	tunnel.alive = false
 	train.x = -190
+
+	score = 0
 end
 
 function love.update(dt)
@@ -47,7 +53,7 @@ function love.update(dt)
 			table.remove(clouds,i)
 		end
 	end
-	
+
 	-- Update trains
 	Train.update(train,dt)
 	Player.collideWithTrain(pl)
@@ -56,14 +62,27 @@ function love.update(dt)
 	Tunnel.update(tunnel,dt)
 	Player.collideWithTunnel(pl)
 	
+	-- Update birds
+	spawnBirds(dt)
+	for i,v in ipairs(birds) do
+		Bird.update(v,dt)
+		if v.alive == false then
+			table.remove(birds,i)
+		end
+	end
+	Player.collideWithBirds(pl)
+
 	-- Move tracks
 	track_frame = track_frame + global_speed * dt * TRACK_SPEED
 	if track_frame >= 11 then
 		track_frame = track_frame % 11
 	end
 
-	-- Increase speed
-	global_speed = global_speed + 0.05*dt
+	-- Increase speed and score
+	if pl.status == 0 or pl.status == 3 then
+		global_speed = global_speed + SPEED_INCREASE*dt
+		score = score + 20*dt
+	end
 
 	-- Respawn train or tunnel
 	if train.alive == false then
@@ -83,6 +102,13 @@ end
 
 function love.draw()
 	love.graphics.scale(SCALE,SCALE)
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.setLineStyle("rough")
+
+	-- Shake camera if hit
+	if (pl.status == 1 or pl.status == 5) and pl.x > 0 then
+		love.graphics.translate(5*(math.random()-0.5),5*(math.random()-0.5))
+	end
 
 	-- Draw background clouds
 	for i,v in ipairs(clouds) do
@@ -111,6 +137,15 @@ function love.draw()
 	for i,v in ipairs(clouds) do
 		if v.speed >= 37 then Cloud.draw(v) end
 	end
+
+	-- Draw birds
+	for i,v in ipairs(birds) do
+		Bird.draw(v)
+	end
+
+	-- Draw score
+	love.graphics.setColor(0,0,0,255)
+	love.graphics.print(math.floor(score),8,8)
 end
 
 function loadResources()
@@ -122,6 +157,12 @@ function loadResources()
 
 	imgTerrain = love.graphics.newImage("gfx/terrain.png")
 	imgTerrain:setFilter("nearest","nearest")
+
+	font8 = love.graphics.newFont("gfx/04b_03.ttf",8)
+
+	fontimg = love.graphics.newImage("gfx/imgfont.png")
+	fontimg:setFilter("nearest","nearest")
+	imgfont = love.graphics.newImageFont(fontimg,"0123456789")
 end
 
 function love.keypressed(key,unicode)

@@ -1,6 +1,6 @@
 Tunnel = {}
 
-TUNNEL_PROBABILITY = 6
+TUNNEL_PROBABILITY = 4
 tunnel_start_back = love.graphics.newQuad(0,0,58,100,128,128)
 tunnel_start_front = love.graphics.newQuad(58,0,6,100,128,128)
 tunnel_end = love.graphics.newQuad(64,0,53,100,128,128)

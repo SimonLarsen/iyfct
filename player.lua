@@ -27,9 +27,10 @@ function Player.update(self,dt)
 	self.onGround = false
 
 	-- Update position
+	self.yspeed = self.yspeed + dt*GRAVITY
+
 	if self.status == 0 then -- normal ourside
 		self.y = self.y + self.yspeed*dt
-		self.yspeed = self.yspeed + dt*GRAVITY
 		if self.y > 71 then
 			self.y = 71
 			self.yspeed = 0
@@ -38,7 +39,6 @@ function Player.update(self,dt)
 	
 	elseif self.status == 3 then -- inside train
 		self.y = self.y + self.yspeed*dt
-		self.yspeed = self.yspeed + dt*GRAVITY
 		if self.y > 66 then
 			self.y = 66
 			self.yspeed = 0
@@ -87,7 +87,6 @@ function Player.collideWithTrain(self)
 		if Player.collideWithPoint(self,train.x+4,train.y+10) or
 		Player.collideWithPoint(self,train.x+2,train.y+24) then
 			if train.type == 1 then -- hit by closed train
-				print("Hit by train at global speed " .. global_speed)
 				self.status = 1 -- hit by train	
 				self.yspeed = -100
 				if self.y < train.y-9 then
@@ -127,6 +126,15 @@ function Player.collideWithTunnel(self)
 		if self.y < 47 and self.x < tunnel.x and
 		self.x > tunnel.x-16 then
 			self.status = 5
+		end
+	end
+end
+
+function Player.collideWithBirds(self)
+	for i,v in ipairs(birds) do
+		if Player.collideWithPoint(self,v.x+5.5,v.y+5) then
+			self.status = 1
+			return
 		end
 	end
 end

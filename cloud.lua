@@ -30,8 +30,8 @@ function Cloud.draw(self)
 end
 
 function spawnClouds(dt)
-	nextCloud = nextCloud - dt
-	if nextCloud <= 0 then
+	next_cloud = next_cloud - dt
+	if next_cloud <= 0 then
 		if #clouds < MAX_CLOUDS then
 			if math.random(2) == 1 then -- small cloud
 				table.insert(clouds,Cloud.create(math.random(32),1,math.random(0,2)))
@@ -39,6 +39,6 @@ function spawnClouds(dt)
 				table.insert(clouds,Cloud.create(math.random(32),2,math.random(0,1)))
 			end
 		end
-		nextCloud = math.random()*1.5
+		next_cloud = math.random()*1.5
 	end
 end
