@@ -14,6 +14,7 @@ function Player.create()
 	self.yspeed = 0
 	self.onGround = true
 	self.status = 0
+	self.alive = true
 	return self
 end
 
@@ -88,6 +89,7 @@ function Player.collideWithTrain(self)
 		Player.collideWithPoint(self,train.x+2,train.y+24) then
 			if train.type == 1 then -- hit by closed train
 				self.status = 1 -- hit by train	
+				self.alive = false
 				self.yspeed = -100
 				if self.y < train.y-9 then
 					self.y = train.y-9
@@ -126,6 +128,7 @@ function Player.collideWithTunnel(self)
 		if self.y < 47 and self.x < tunnel.x and
 		self.x > tunnel.x-16 then
 			self.status = 5
+			self.alive = false
 		end
 	end
 end
@@ -134,6 +137,7 @@ function Player.collideWithBirds(self)
 	for i,v in ipairs(birds) do
 		if Player.collideWithPoint(self,v.x+5.5,v.y+5) then
 			self.status = 1
+			self.alive = false
 			return
 		end
 	end

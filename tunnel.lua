@@ -7,7 +7,7 @@ tunnel_end = love.graphics.newQuad(64,0,53,100,128,128)
 
 function Tunnel.create()
 	local self = {}
-	self.x = WIDTH+52
+	self.x = WIDTH+58
 	self.alive = true
 	return self
 end
@@ -33,7 +33,7 @@ end
 function Tunnel.drawFront(self)
 	if self.alive == true then
 		love.graphics.setColor(255,255,255,255)
-		love.graphics.rectangle("fill",self.x+6,0,97,HEIGHT)
+		love.graphics.rectangle("fill",self.x+5,0,98,HEIGHT)
 		love.graphics.drawq(imgTerrain,tunnel_start_front,self.x,0)
 		love.graphics.drawq(imgTerrain,tunnel_end,self.x+90,0)
 	end

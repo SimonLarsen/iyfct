@@ -6,7 +6,7 @@ require("bird")
 
 WIDTH = 300
 HEIGHT = 100
-SCALE = 2
+SCALE = 3
 
 TRACK_SPEED = 150
 SPEED_INCREASE = 0.04
@@ -79,8 +79,10 @@ function love.update(dt)
 	end
 
 	-- Increase speed and score
-	if pl.status == 0 or pl.status == 3 then
+	--if pl.status == 0 or pl.status == 3 then
+	if pl.alive == true then
 		global_speed = global_speed + SPEED_INCREASE*dt
+		if global_speed > 2.5 then global_speed = 2.5 end
 		score = score + 20*dt
 	end
 
@@ -93,8 +95,9 @@ function love.update(dt)
 				train = Train.createRandom()
 			end
 		else
-			if math.random(1,32) == 1 then
+			if tunnel.x > WIDTH then
 				train = Train.create(2)
+				train.x = tunnel.x + math.random(1,250) - (tunnel.x - WIDTH)
 			end
 		end
 	end
@@ -146,6 +149,10 @@ function love.draw()
 	-- Draw score
 	love.graphics.setColor(0,0,0,255)
 	love.graphics.print(math.floor(score),8,8)
+
+	if pl.alive == false then
+		love.graphics.printf("you didn't make it to work\npress r to retry",0,45,WIDTH,"center")
+	end
 end
 
 function loadResources()
@@ -158,11 +165,10 @@ function loadResources()
 	imgTerrain = love.graphics.newImage("gfx/terrain.png")
 	imgTerrain:setFilter("nearest","nearest")
 
-	font8 = love.graphics.newFont("gfx/04b_03.ttf",8)
-
 	fontimg = love.graphics.newImage("gfx/imgfont.png")
 	fontimg:setFilter("nearest","nearest")
-	imgfont = love.graphics.newImageFont(fontimg,"0123456789")
+	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-")
+	imgfont:setLineHeight(2)
 end
 
 function love.keypressed(key,unicode)
