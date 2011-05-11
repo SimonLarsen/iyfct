@@ -1,4 +1,5 @@
 Tunnel = {}
+Tunnel.__index = Tunnel
 
 TUNNEL_PROBABILITY = 4
 tunnel_start_back = love.graphics.newQuad(0,0,58,100,512,512)
@@ -6,12 +7,13 @@ tunnel_end = love.graphics.newQuad(58,0,133,100,512,512)
 
 function Tunnel.create()
 	local self = {}
+	setmetatable(self,Tunnel)
 	self.x = WIDTH+58
 	self.alive = true
 	return self
 end
 
-function Tunnel.update(self,dt)
+function Tunnel:update(dt)
 	if self.alive == false then
 		return
 	end
@@ -23,13 +25,13 @@ function Tunnel.update(self,dt)
 	end
 end
 
-function Tunnel.drawBack(self)
+function Tunnel:drawBack()
 	if self.alive == true then
 		love.graphics.drawq(imgTerrain,tunnel_start_back,self.x-58,0)
 	end
 end
 
-function Tunnel.drawFront(self)
+function Tunnel:drawFront()
 	if self.alive == true then
 		love.graphics.drawq(imgTerrain,tunnel_end,self.x,0)
 	end

@@ -1,4 +1,5 @@
 Bird = {}
+Bird.__index = Bird
 
 bird_frames = {}
 bird_frames[0] = love.graphics.newQuad(0,64,11,8,128,128)
@@ -8,6 +9,7 @@ bird_frames[3] = love.graphics.newQuad(33,64,11,8,128,128)
 
 function Bird.create()
 	local self = {}
+	setmetatable(self,Bird)
 	self.x = WIDTH
 	self.y = math.random(10,40)
 	self.alive = true
@@ -16,7 +18,7 @@ function Bird.create()
 	return self
 end
 
-function Bird.update(self,dt)
+function Bird:update(dt)
 	self.x = self.x - dt * self.speed * global_speed
 	self.frame = (self.frame + 10*dt) % 4
 	if self.x < -12 then
@@ -24,7 +26,7 @@ function Bird.update(self,dt)
 	end
 end
 
-function Bird.draw(self)
+function Bird:draw()
 	love.graphics.drawq(imgSprites,bird_frames[math.floor(self.frame)],self.x,self.y)
 end
 

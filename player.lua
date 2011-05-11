@@ -1,4 +1,5 @@
 Player = {}
+Player.__index = Player
 
 JUMP_POWER = -300
 GRAVITY = 1000
@@ -8,6 +9,7 @@ PLAYER_START_X = 64
 
 function Player.create()
 	local self = {}
+	setmetatable(self,Player)
 	self.frame = 0
 	self.x = PLAYER_START_X
 	self.y = 71
@@ -18,7 +20,7 @@ function Player.create()
 	return self
 end
 
-function Player.update(self,dt)
+function Player:update(dt)
 	-- Check keyboard input
 	if love.keyboard.isDown(' ') and self.onGround == true then
 		self.yspeed = JUMP_POWER
@@ -64,7 +66,7 @@ function Player.update(self,dt)
 	end
 end
 
-function Player.draw(self)
+function Player:draw()
 	local frame = 15*math.floor(self.frame)
 	local quad = love.graphics.newQuad(frame,0,15,21,128,128)
 	if self.status == 0 then
@@ -78,7 +80,7 @@ function Player.draw(self)
 	end
 end
 
-function Player.collideWithTrain(self)
+function Player:collideWithTrain()
 	if train.alive == false then
 		return
 	end
@@ -120,7 +122,7 @@ function Player.collideWithTrain(self)
 	end
 end
 
-function Player.collideWithTunnel(self)
+function Player:collideWithTunnel()
 	if tunnel.alive == false then
 		return
 	end
@@ -134,7 +136,7 @@ function Player.collideWithTunnel(self)
 	end
 end
 
-function Player.collideWithBirds(self)
+function Player:collideWithBirds()
 	for i,v in ipairs(birds) do
 		if Player.collideWithPoint(self,v.x+5.5,v.y+5) then
 			self.status = 1
@@ -144,7 +146,7 @@ function Player.collideWithBirds(self)
 	end
 end
 
-function Player.collideWithPoint(self,x,y)
+function Player:collideWithPoint(x,y)
 	if x > self.x and x < self.x+PLAYER_WIDTH
 	and y > self.y and y < self.y+PLAYER_HEIGHT then
 		return true

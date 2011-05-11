@@ -1,4 +1,6 @@
 Train = {}
+Train.__index = Train
+
 normal_train_quad = love.graphics.newQuad(0,0,132,36,256,256)
 open_train_quad = love.graphics.newQuad(0,48,146,36,256,256)
 inside_train_quad = love.graphics.newQuad(0,96,146,36,256,256)
@@ -16,6 +18,7 @@ end
 
 function Train.create(type)
 	local self = {}
+	setmetatable(self,Train)
 	self.speed = math.random(TRAIN_MIN_SPEED,TRAIN_MAX_SPEED)
 	self.x = WIDTH
 	self.y = 56
@@ -24,7 +27,7 @@ function Train.create(type)
 	return self
 end
 
-function Train.update(self,dt)
+function Train:update(dt)
 	if self.alive == false then
 		return
 	end
@@ -35,7 +38,7 @@ function Train.update(self,dt)
 	end
 end
 
-function Train.draw(self)
+function Train:draw()
 	if self.alive == false then
 		return
 	end

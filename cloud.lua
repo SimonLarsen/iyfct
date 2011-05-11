@@ -1,8 +1,10 @@
 MAX_CLOUDS = 32
 Cloud = {}
+Cloud.__index = Cloud
 
 function Cloud.create(y,size,type)
 	local self = {}
+	setmetatable(self,Cloud)
 	self.x = WIDTH
 	self.y = y
 	self.size = size
@@ -12,12 +14,12 @@ function Cloud.create(y,size,type)
 	return self
 end
 
-function Cloud.update(self,dt)
+function Cloud:update(dt)
 	-- self.x = self.x - dt*self.speed OLD way
 	self.x = self.x - global_speed * dt * self.speed
 end
 
-function Cloud.draw(self)
+function Cloud:draw()
 	local quad = nil
 	if self.size == 1 then
 		quad = love.graphics.newQuad(self.type*16,32,16,16,128,128)

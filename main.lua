@@ -46,34 +46,34 @@ end
 
 function love.update(dt)
 	-- Update player
-	Player.update(pl,dt)
+	pl:update(dt)
 
 	-- Update clouds
 	spawnClouds(dt)
-	for i,v in ipairs(clouds) do
-		Cloud.update(v,dt)
-		if v.x < -32 then
+	for i,cl in ipairs(clouds) do
+		cl:update(dt)
+		if cl.x < -32 then
 			table.remove(clouds,i)
 		end
 	end
 
 	-- Update trains
-	Train.update(train,dt)
-	Player.collideWithTrain(pl)
+	train:update(dt)
+	pl:collideWithTrain()
 	
 	-- Update tunnel
-	Tunnel.update(tunnel,dt)
-	Player.collideWithTunnel(pl)
+	tunnel:update(dt)
+	pl:collideWithTunnel()
 	
 	-- Update birds
 	spawnBirds(dt)
-	for i,v in ipairs(birds) do
-		Bird.update(v,dt)
-		if v.alive == false then
+	for i,b in ipairs(birds) do
+		b:update(dt)
+		if b.alive == false then
 			table.remove(birds,i)
 		end
 	end
-	Player.collideWithBirds(pl)
+	pl:collideWithBirds()
 
 	-- Move tracks
 	track_frame = track_frame + global_speed * dt * TRACK_SPEED
@@ -123,12 +123,12 @@ function love.draw()
 	drawTerrain()
 
 	-- Draw clouds
-	for i,v in ipairs(clouds) do
-		Cloud.draw(v)
+	for i,cl in ipairs(clouds) do
+		cl:draw()
 	end
 
 	-- Draw back of tunnel
-	Tunnel.drawBack(tunnel)
+	tunnel:drawBack()
 
 	-- Draw railroad tracks
 	for i=0,2 do
@@ -136,18 +136,18 @@ function love.draw()
 	end
 
 	-- Draw train
-	Train.draw(train)
+	train:draw()
 
 	-- Draw player
 	love.graphics.setColor(255,255,255,255)
-	Player.draw(pl)
+	pl:draw()
 
 	-- Draw front of tunnel
-	Tunnel.drawFront(tunnel)
+	tunnel:drawFront()
 
 	-- Draw birds
-	for i,v in ipairs(birds) do
-		Bird.draw(v)
+	for i,b in ipairs(birds) do
+		b:draw(v)
 	end
 
 	-- Draw score
