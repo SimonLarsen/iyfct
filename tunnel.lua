@@ -1,9 +1,8 @@
 Tunnel = {}
 
 TUNNEL_PROBABILITY = 4
-tunnel_start_back = love.graphics.newQuad(0,0,58,100,128,128)
-tunnel_start_front = love.graphics.newQuad(58,0,6,100,128,128)
-tunnel_end = love.graphics.newQuad(64,0,53,100,128,128)
+tunnel_start_back = love.graphics.newQuad(0,0,58,100,512,512)
+tunnel_end = love.graphics.newQuad(58,0,133,100,512,512)
 
 function Tunnel.create()
 	local self = {}
@@ -19,7 +18,7 @@ function Tunnel.update(self,dt)
 
 	self.x = self.x - global_speed * dt * TRACK_SPEED
 
-	if self.x < -200 then
+	if self.x < -150 then
 		self.alive = false
 	end
 end
@@ -32,9 +31,6 @@ end
 
 function Tunnel.drawFront(self)
 	if self.alive == true then
-		love.graphics.setColor(255,255,255,255)
-		love.graphics.rectangle("fill",self.x+5,0,98,HEIGHT)
-		love.graphics.drawq(imgTerrain,tunnel_start_front,self.x,0)
-		love.graphics.drawq(imgTerrain,tunnel_end,self.x+90,0)
+		love.graphics.drawq(imgTerrain,tunnel_end,self.x,0)
 	end
 end

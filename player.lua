@@ -100,6 +100,7 @@ function Player.collideWithTrain(self)
 					self.status = 3
 				else
 					self.status = 1
+					self.alive = false
 				end
 			end
 		-- check if landed on train

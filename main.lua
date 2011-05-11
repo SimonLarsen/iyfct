@@ -3,10 +3,13 @@ require("cloud")
 require("train")
 require("tunnel")
 require("bird")
+require("terrain")
 
 WIDTH = 300
 HEIGHT = 100
 SCALE = 3
+
+bgcolor = {236,243,201,255}
 
 TRACK_SPEED = 150
 SPEED_INCREASE = 0.04
@@ -15,7 +18,7 @@ track_quad = love.graphics.newQuad(0,48,121,5,128,128)
 
 function love.load()
 	math.randomseed(os.time())
-	love.graphics.setBackgroundColor(255,255,255)
+	love.graphics.setBackgroundColor(bgcolor)
 
 	loadResources()
 	love.graphics.setFont(imgfont)
@@ -78,6 +81,9 @@ function love.update(dt)
 		track_frame = track_frame % 11
 	end
 
+	-- Update terrain (skyscrapers etc.)
+	updateTerrain(dt)
+
 	-- Increase speed and score
 	--if pl.status == 0 or pl.status == 3 then
 	if pl.alive == true then
@@ -113,9 +119,12 @@ function love.draw()
 		love.graphics.translate(5*(math.random()-0.5),5*(math.random()-0.5))
 	end
 
-	-- Draw background clouds
+	-- Draw terrain (skyscrapers etc.)
+	drawTerrain()
+
+	-- Draw clouds
 	for i,v in ipairs(clouds) do
-		if v.speed < 37 then Cloud.draw(v) end
+		Cloud.draw(v)
 	end
 
 	-- Draw back of tunnel
@@ -135,11 +144,6 @@ function love.draw()
 
 	-- Draw front of tunnel
 	Tunnel.drawFront(tunnel)
-
-	-- Draw foreground clouds
-	for i,v in ipairs(clouds) do
-		if v.speed >= 37 then Cloud.draw(v) end
-	end
 
 	-- Draw birds
 	for i,v in ipairs(birds) do

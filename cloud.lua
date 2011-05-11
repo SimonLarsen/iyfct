@@ -1,5 +1,4 @@
-CLOUD_SPAWN_RATE = 0.25
-MAX_CLOUDS = 10
+MAX_CLOUDS = 32
 Cloud = {}
 
 function Cloud.create(y,size,type)
@@ -7,14 +6,15 @@ function Cloud.create(y,size,type)
 	self.x = WIDTH
 	self.y = y
 	self.size = size
-	self.speed = global_speed*math.random(25,50)
+	self.speed = math.random(80,130)
 	self.type = type
 	self.alive = true
 	return self
 end
 
 function Cloud.update(self,dt)
-	self.x = self.x - dt*self.speed
+	-- self.x = self.x - dt*self.speed OLD way
+	self.x = self.x - global_speed * dt * self.speed
 end
 
 function Cloud.draw(self)
@@ -39,6 +39,6 @@ function spawnClouds(dt)
 				table.insert(clouds,Cloud.create(math.random(32),2,math.random(0,1)))
 			end
 		end
-		next_cloud = math.random()*1.5
+		next_cloud = math.random()
 	end
 end
