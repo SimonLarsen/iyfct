@@ -17,6 +17,8 @@ function Player.create()
 	self.onGround = true
 	self.status = 0
 	self.alive = true
+	self.invul = true
+	self.invultime = 1
 	return self
 end
 
@@ -54,15 +56,20 @@ function Player:update(dt)
 	elseif self.status == 1 then -- hit by train
 		self.y = self.y + self.yspeed*dt
 		self.x = self.x - dt*300
-	
+
 	elseif self.status == 5 then -- hit by mountain
 		self.x = self.x - global_speed * dt * TRACK_SPEED * 1.5
 	end
 
 	-- Update walk frame
-	self.frame = self.frame + 20*dt
-	if self.frame >= 6 then
-		self.frame = 0
+	self.frame = (self.frame + 20*dt) % 6
+
+	-- Update invulnerability
+	if self.invultime > 0 then
+		self.invultime = self.invultime - dt
+		if self.invultime <= 0 then
+			self.invul = false
+		end
 	end
 end
 
@@ -70,7 +77,9 @@ function Player:draw()
 	local frame = 15*math.floor(self.frame)
 	local quad = love.graphics.newQuad(frame,0,15,21,128,128)
 	if self.status == 0 then
-		love.graphics.drawq(imgSprites,quad,self.x,self.y)
+		if self.invul == false or math.floor(self.frame) % 2 == 0 then
+			love.graphics.drawq(imgSprites,quad,self.x,self.y)
+		end
 
 	elseif self.status == 1 or self.status == 5 then
 		love.graphics.drawq(imgSprites,quad,self.x,self.y, -self.x/10, 1,1,7,10)
@@ -80,8 +89,26 @@ function Player:draw()
 	end
 end
 
+function Player:kill(status)
+	scrn_shake = 0.25
+
+	if coffee >= 5 then
+		self.invul = true
+		self.invultime = 1
+		coffee = 0
+	else
+		self.alive = false
+		self.status = status
+		if status == 1 then
+			if self.yspeed > -100 then
+				self.yspeed = -100
+			end
+		end
+	end
+end
+
 function Player:collideWithTrain()
-	if train.alive == false then
+	if train.alive == false or self.invul == true then
 		return
 	end
 
@@ -90,19 +117,13 @@ function Player:collideWithTrain()
 		if Player.collideWithPoint(self,train.x+4,train.y+10) or
 		Player.collideWithPoint(self,train.x+2,train.y+24) then
 			if train.type == 1 then -- hit by closed train
-				self.status = 1 -- hit by train	
-				self.alive = false
-				self.yspeed = -100
-				if self.y < train.y-9 then
-					self.y = train.y-9
-				end
+				self:kill(1)
 
 			elseif train.type == 2 then -- hit by open train
 				if self.yspeed >= 0 then
 					self.status = 3
 				else
-					self.status = 1
-					self.alive = false
+					self:kill(1)
 				end
 			end
 		-- check if landed on train
@@ -123,24 +144,26 @@ function Player:collideWithTrain()
 end
 
 function Player:collideWithTunnel()
-	if tunnel.alive == false then
+	if tunnel.alive == false or self.invul == true then
 		return
 	end
 
 	if self.status == 0 then
 		if self.y < 47 and self.x < tunnel.x and
 		self.x > tunnel.x-16 then
-			self.status = 5
-			self.alive = false
+			self:kill(5)
 		end
 	end
 end
 
 function Player:collideWithBirds()
+	if self.invul == true then
+		return
+	end
+
 	for i,v in ipairs(birds) do
 		if Player.collideWithPoint(self,v.x+5.5,v.y+5) then
-			self.status = 1
-			self.alive = false
+			self:kill(1)
 			return
 		end
 	end

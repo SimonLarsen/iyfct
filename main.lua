@@ -34,17 +34,23 @@ function restart()
 	next_bird = 1
 	global_speed = 1.7 
 	track_frame = 0
+	scrn_shake = 0
 
 	train = Train.create()
 	train.alive = false
 	tunnel = Tunnel.create()
 	tunnel.alive = false
-	train.x = -190
 
 	score = 0
+	coffee = 0
 end
 
 function love.update(dt)
+	-- Update screenshake thingy
+	if scrn_shake > 0 then
+		scrn_shake = scrn_shake - dt
+	end
+
 	-- Update player
 	pl:update(dt)
 
@@ -115,7 +121,7 @@ function love.draw()
 	love.graphics.setLineStyle("rough")
 
 	-- Shake camera if hit
-	if (pl.status == 1 or pl.status == 5) and pl.x > 0 then
+	if scrn_shake > 0 then
 		love.graphics.translate(5*(math.random()-0.5),5*(math.random()-0.5))
 	end
 
@@ -157,6 +163,12 @@ function love.draw()
 	if pl.alive == false then
 		love.graphics.printf("you didn't make it to work\npress r to retry",0,45,WIDTH,"center")
 	end
+
+	-- Draw coffee meter
+	local cquad = love.graphics.newQuad(48+math.floor(coffee)*9,64,9,9,128,128)
+	if coffee < 5 or pl.frame < 4 then
+		love.graphics.drawq(imgSprites,cquad,284,7)
+	end
 end
 
 function loadResources()
@@ -192,6 +204,8 @@ function love.keypressed(key,unicode)
 	elseif key == '4' then
 		SCALE = 4
 		updateScale()
+	elseif key == 'g' then
+		coffee = coffee+1
 	end
 end
 

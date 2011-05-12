@@ -1,8 +1,8 @@
 front_x = 0
 back_x = 0
 
-back_terrain = love.graphics.newQuad(0,112,300,100,512,512)
-front_terrain = love.graphics.newQuad(0,224,300,100,512,512)
+back_terrain = love.graphics.newQuad(0,112,300,94,512,512)
+front_terrain = love.graphics.newQuad(0,224,300,94,512,512)
 
 function updateTerrain(dt)
 	front_x = (front_x + 65*dt) % WIDTH
