@@ -108,14 +108,15 @@ function Player:kill(status)
 end
 
 function Player:collideWithTrain()
-	if train.alive == false or self.invul == true then
+	if train.alive == false then
 		return
 	end
 
 	if self.status == 0 then
 		-- check collision with front of train
 		if Player.collideWithPoint(self,train.x+4,train.y+10) or
-		Player.collideWithPoint(self,train.x+2,train.y+24) then
+		Player.collideWithPoint(self,train.x+2,train.y+24) and
+		self.invul == false then
 			if train.type == 1 then -- hit by closed train
 				self:kill(1)
 
