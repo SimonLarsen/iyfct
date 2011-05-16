@@ -22,12 +22,13 @@ function love.load()
 
 	loadResources()
 	love.graphics.setFont(imgfont)
+	pl = Player.create()
 	restart()
 	updateScale()
 end
 
 function restart()
-	pl = Player.create()
+	pl:reset()
 	clouds = {}
 	next_cloud = 0
 	birds = {}

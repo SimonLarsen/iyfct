@@ -10,6 +10,11 @@ PLAYER_START_X = 64
 function Player.create()
 	local self = {}
 	setmetatable(self,Player)
+	self:reset()
+	return self
+end
+
+function Player:reset()
 	self.frame = 0
 	self.x = PLAYER_START_X
 	self.y = 71
@@ -19,7 +24,6 @@ function Player.create()
 	self.alive = true
 	self.invul = true
 	self.invultime = 1
-	return self
 end
 
 function Player:update(dt)
