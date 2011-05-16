@@ -44,9 +44,13 @@ function restart()
 
 	score = 0
 	coffee = 0
+	pause = false
 end
 
 function love.update(dt)
+	if pause == true then
+		return
+	end
 	-- Update screenshake thingy
 	if scrn_shake > 0 then
 		scrn_shake = scrn_shake - dt
@@ -161,8 +165,14 @@ function love.draw()
 	love.graphics.setColor(0,0,0,255)
 	love.graphics.print(math.floor(score),8,8)
 
+	-- Draw game over message
 	if pl.alive == false then
 		love.graphics.printf("you didn't make it to work\npress r to retry",0,45,WIDTH,"center")
+	end
+
+	-- Draw pause message
+	if pause == true then
+		love.graphics.printf("paused",0,50,WIDTH,"center")
 	end
 
 	-- Draw coffee meter
@@ -193,6 +203,8 @@ function love.keypressed(key,unicode)
 		return         -- avoid unnecessary checks
 	elseif key == 'r' or key == "return" then
 		restart()
+	elseif key == 'p' then
+		pause = not pause
 	elseif key == '1' then
 		SCALE = 1
 		updateScale()

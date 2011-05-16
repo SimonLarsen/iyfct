@@ -94,6 +94,10 @@ function Player:draw()
 end
 
 function Player:kill(status)
+	if self.invul == true then
+		return
+	end
+
 	scrn_shake = 0.25
 
 	if coffee >= 5 then
@@ -119,8 +123,7 @@ function Player:collideWithTrain()
 	if self.status == 0 then
 		-- check collision with front of train
 		if Player.collideWithPoint(self,train.x+4,train.y+10) or
-		Player.collideWithPoint(self,train.x+2,train.y+24) and
-		self.invul == false then
+		Player.collideWithPoint(self,train.x+2,train.y+24) then
 			if train.type == 1 then -- hit by closed train
 				self:kill(1)
 
@@ -141,9 +144,14 @@ function Player:collideWithTrain()
 		end
 	end
 
-	if self.status == 3 then
+	if self.status == 3 then -- inside open train
 		if self.x > train.x+135 then
 			self.status = 0
+		elseif train.hasCoffee == true and
+		self:collideWithPoint(train.x+57,train.y+20) then
+			train.hasCoffee = false
+			coffee = coffee + 1
+			if coffee > 5 then coffee = 5 end
 		end
 	end
 end
