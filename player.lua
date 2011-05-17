@@ -99,6 +99,8 @@ function Player:kill(status)
 	end
 
 	scrn_shake = 0.25
+	auHit:stop()
+	auHit:play()
 
 	if coffee >= 5 then
 		self.invul = true
@@ -152,6 +154,7 @@ function Player:collideWithTrain()
 			train.hasCoffee = false
 			coffee = coffee + 1
 			if coffee > 5 then coffee = 5 end
+			auCoffee:stop() auCoffee:play()
 		end
 	end
 end

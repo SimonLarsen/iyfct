@@ -182,22 +182,6 @@ function love.draw()
 	end
 end
 
-function loadResources()
-	imgSprites = love.graphics.newImage("gfx/sprites.png")
-	imgSprites:setFilter("nearest","nearest")
-	
-	imgTrains = love.graphics.newImage("gfx/trains.png")
-	imgTrains:setFilter("nearest","nearest")
-
-	imgTerrain = love.graphics.newImage("gfx/terrain.png")
-	imgTerrain:setFilter("nearest","nearest")
-
-	fontimg = love.graphics.newImage("gfx/imgfont.png")
-	fontimg:setFilter("nearest","nearest")
-	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-")
-	imgfont:setLineHeight(2)
-end
-
 function love.keypressed(key,unicode)
 	if key == ' ' then -- will be space most of the time
 		return         -- avoid unnecessary checks
@@ -226,4 +210,25 @@ function updateScale()
 	SCRNWIDTH = WIDTH*SCALE
 	SCRNHEIGHT = HEIGHT*SCALE
 	love.graphics.setMode(SCRNWIDTH,SCRNHEIGHT,false)
+end
+
+function loadResources()
+	-- Load images
+	imgSprites = love.graphics.newImage("gfx/sprites.png")
+	imgSprites:setFilter("nearest","nearest")
+	
+	imgTrains = love.graphics.newImage("gfx/trains.png")
+	imgTrains:setFilter("nearest","nearest")
+
+	imgTerrain = love.graphics.newImage("gfx/terrain.png")
+	imgTerrain:setFilter("nearest","nearest")
+
+	fontimg = love.graphics.newImage("gfx/imgfont.png")
+	fontimg:setFilter("nearest","nearest")
+	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-")
+	imgfont:setLineHeight(2)
+
+	-- Load sound effects
+	auCoffee = love.audio.newSource("sfx/coffee.wav","static")
+	auHit = love.audio.newSource("sfx/hit.wav","static")
 end
