@@ -15,3 +15,16 @@ function drawTerrain()
 	love.graphics.drawq(imgTerrain,front_terrain,0-front_x,0)
 	love.graphics.drawq(imgTerrain,front_terrain,WIDTH-front_x,0)
 end
+
+function updateTracks(dt)
+	track_frame = track_frame + global_speed * dt * TRACK_SPEED
+	if track_frame >= 11 then
+		track_frame = track_frame % 11
+	end
+end
+
+function drawTracks()
+	for i=0,2 do
+		love.graphics.drawq(imgSprites,track_quad,i*121 - track_frame,92)
+	end
+end

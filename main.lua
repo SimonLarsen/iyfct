@@ -4,17 +4,25 @@ require("train")
 require("tunnel")
 require("bird")
 require("terrain")
+require("menu")
 
 WIDTH = 300
 HEIGHT = 100
 SCALE = 3
 
 bgcolor = {236,243,201,255}
+darkcolor = {2,9,4,255}
 
 TRACK_SPEED = 150
+
 SPEED_INCREASE = 0.04
+START_SPEED = 1.7
+MAX_SPEED = 2.5
 
 track_quad = love.graphics.newQuad(0,48,121,5,128,128)
+gamestate = 1
+selection = 0
+submenu = 0
 
 function love.load()
 	math.randomseed(os.time())
@@ -23,8 +31,8 @@ function love.load()
 	loadResources()
 	love.graphics.setFont(imgfont)
 	pl = Player.create()
-	restart()
 	updateScale()
+	restart()
 end
 
 function restart()
@@ -33,7 +41,7 @@ function restart()
 	next_cloud = 0
 	birds = {}
 	next_bird = 1
-	global_speed = 1.7 
+	global_speed = START_SPEED
 	track_frame = 0
 	scrn_shake = 0
 
@@ -48,6 +56,14 @@ function restart()
 end
 
 function love.update(dt)
+	if gamestate == 0 then
+		updateGame(dt)
+	elseif gamestate == 1 then
+		updateMenu(dt)
+	end
+end
+
+function updateGame(dt)
 	if pause == true then
 		return
 	end
@@ -70,11 +86,9 @@ function love.update(dt)
 
 	-- Update trains
 	train:update(dt)
-	pl:collideWithTrain()
 	
 	-- Update tunnel
 	tunnel:update(dt)
-	pl:collideWithTunnel()
 	
 	-- Update birds
 	spawnBirds(dt)
@@ -84,13 +98,16 @@ function love.update(dt)
 			table.remove(birds,i)
 		end
 	end
-	pl:collideWithBirds()
 
-	-- Move tracks
-	track_frame = track_frame + global_speed * dt * TRACK_SPEED
-	if track_frame >= 11 then
-		track_frame = track_frame % 11
+	-- Check collisions
+	if pl.alive == true then
+		pl:collideWithTrain()
+		pl:collideWithTunnel()
+		pl:collideWithBirds()
 	end
+
+	-- Move railway tracks
+	updateTracks(dt)
 
 	-- Update terrain (skyscrapers etc.)
 	updateTerrain(dt)
@@ -99,7 +116,7 @@ function love.update(dt)
 	--if pl.status == 0 or pl.status == 3 then
 	if pl.alive == true then
 		global_speed = global_speed + SPEED_INCREASE*dt
-		if global_speed > 2.5 then global_speed = 2.5 end
+		if global_speed > MAX_SPEED then global_speed = MAX_SPEED end
 		score = score + 20*dt
 	end
 
@@ -123,8 +140,14 @@ end
 function love.draw()
 	love.graphics.scale(SCALE,SCALE)
 	love.graphics.setColor(255,255,255,255)
-	love.graphics.setLineStyle("rough")
+	if gamestate == 0 then
+		drawGame()
+	elseif gamestate == 1 then
+		drawMenu()
+	end
+end
 
+function drawGame()
 	-- Shake camera if hit
 	if scrn_shake > 0 then
 		love.graphics.translate(5*(math.random()-0.5),5*(math.random()-0.5))
@@ -142,9 +165,7 @@ function love.draw()
 	tunnel:drawBack()
 
 	-- Draw railroad tracks
-	for i=0,2 do
-		love.graphics.drawq(imgSprites,track_quad,i*121 - track_frame,92)
-	end
+	drawTracks()
 
 	-- Draw train
 	train:draw()
@@ -162,7 +183,7 @@ function love.draw()
 	end
 
 	-- Draw score
-	love.graphics.setColor(0,0,0,255)
+	love.graphics.setColor(darkcolor)
 	love.graphics.print(math.floor(score),8,8)
 
 	-- Draw game over message
@@ -185,8 +206,21 @@ end
 function love.keypressed(key,unicode)
 	if key == ' ' then -- will be space most of the time
 		return         -- avoid unnecessary checks
-	elseif key == 'r' or key == "return" then
+	elseif key == 'r' then
 		restart()
+	elseif key == 'up' then
+		selection = selection-1
+	elseif key == 'down' then
+		selection = selection+1
+	elseif key == 'return' then
+		enter_pressed = true
+	elseif key == 'escape' then
+		if gamestate ~= 1 or submenu ~= 0 then
+			auSelect:stop() auSelect:play()
+			gamestate = 1
+			submenu = 0
+			enter_pressed = false
+		end
 	elseif key == 'p' then
 		pause = not pause
 	elseif key == '1' then
@@ -201,8 +235,6 @@ function love.keypressed(key,unicode)
 	elseif key == '4' then
 		SCALE = 4
 		updateScale()
-	elseif key == 'g' then
-		coffee = coffee+1
 	end
 end
 
@@ -223,12 +255,22 @@ function loadResources()
 	imgTerrain = love.graphics.newImage("gfx/terrain.png")
 	imgTerrain:setFilter("nearest","nearest")
 
+	imgSplash = love.graphics.newImage("gfx/splash.png")
+	imgSplash:setFilter("nearest","nearest")
+
 	fontimg = love.graphics.newImage("gfx/imgfont.png")
 	fontimg:setFilter("nearest","nearest")
-	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-")
+	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-·")
 	imgfont:setLineHeight(2)
 
 	-- Load sound effects
 	auCoffee = love.audio.newSource("sfx/coffee.wav","static")
 	auHit = love.audio.newSource("sfx/hit.wav","static")
+	auSelect = love.audio.newSource("sfx/select.wav","static")
 end
+
+--[[
+  Gamestates:
+  0 ingame
+  1 menu
+--]]

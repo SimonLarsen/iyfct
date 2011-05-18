@@ -94,7 +94,7 @@ function Player:draw()
 end
 
 function Player:kill(status)
-	if self.invul == true then
+	if self.invul == true or self.alive == false then
 		return
 	end
 
