@@ -3,3 +3,7 @@ h1. In Your Face City Trains
 h2. Instructions
 
 h2. Controls
+
+* Space: Jump
+* R: Restart
+* 1-4: Set zoom
