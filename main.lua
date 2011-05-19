@@ -212,15 +212,43 @@ function love.keypressed(key,unicode)
 		selection = selection-1
 	elseif key == 'down' then
 		selection = selection+1
+
 	elseif key == 'return' then
-		enter_pressed = true
-	elseif key == 'escape' then
-		if gamestate ~= 1 or submenu ~= 0 then
-			auSelect:stop() auSelect:play()
-			gamestate = 1
-			submenu = 0
-			enter_pressed = false
+		if gamestate == 1 then
+			if submenu == 0 then -- splash screen
+				submenu = 2 -- Jumps straight to difficulty.
+				auSelect:stop() auSelect:play()
+			elseif submenu == 2 then  -- difficulty selection
+				if selection == 0 then  -- normal
+					START_SPEED = 1.5
+					SPEED_INCREASE = 0.03
+					MAX_SPEED = 2.25
+				elseif selection == 1 then -- hard
+					START_SPEED = 1.7
+					SPEED_INCREASE = 0.04
+					MAX_SPEED = 2.5
+				else -- OH GOD
+					START_SPEED = 2.25 
+					SPEED_INCREASE = 0.06
+					MAX_SPEED = 3.1
+				end
+				auSelect:stop() auSelect:play()
+				gamestate = 0
+				restart()
+			end
 		end
+
+	elseif key == 'escape' then
+		if gamestate == 0 then -- ingame
+			gamestate = 1
+			submenu = 2
+			selection = 0
+		elseif gamestate == 1 then
+			if submenu == 2 then
+				submenu = 0
+			end
+		end
+		auSelect:stop() auSelect:play()
 	elseif key == 'p' then
 		pause = not pause
 	elseif key == '1' then
