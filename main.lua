@@ -145,7 +145,7 @@ function updateGame(dt)
 				local banana = math.random(1,5)
 				if banana == 1 then -- spawn tunnel
 					tunnel = Tunnel.create()
-				elseif banana == 2 then
+				elseif banana == 2 and global_speed > 1.7 then
 					gorge = Gorge.create()
 				else
 					train = Train.createRandom()
@@ -220,7 +220,7 @@ function drawGame()
 
 	-- Draw pause message
 	if pause == true then
-		love.graphics.printf("paused",0,50,WIDTH,"center")
+		love.graphics.printf("paused\npress p to continue",0,50,WIDTH,"center")
 	end
 
 	-- Draw coffee meter
@@ -259,7 +259,9 @@ function love.keypressed(key,unicode)
 			submenu = 2
 			selection = 0
 		elseif gamestate == 1 then
-			if submenu == 2 then
+			if submenu == 0 then
+				love.event.push("q")
+			elseif submenu == 2 then
 				submenu = 0
 			end
 		end
@@ -332,6 +334,12 @@ end
 function love.quit()
 	saveHighscore()
 	-- print(exit_message)
+end
+
+function love.focus(f)
+	if not f then
+		pause = true
+	end
 end
 
 --[[
