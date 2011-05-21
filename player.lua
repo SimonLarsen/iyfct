@@ -5,7 +5,7 @@ JUMP_POWER = -300
 GRAVITY = 1000
 PLAYER_WIDTH = 14
 PLAYER_HEIGHT = 21
-PLAYER_START_X = 64
+PLAYER_START_X = 54
 
 function Player.create()
 	local self = {}
@@ -60,6 +60,14 @@ function Player:update(dt)
 	elseif self.status == 1 then -- hit by train
 		self.y = self.y + self.yspeed*dt
 		self.x = self.x - dt*300
+	
+	elseif self.status == 4 then -- falling through ground
+		self.y = self.y + 150*dt
+		if self.y > HEIGHT+10 then
+			scrn_shake = 0.25
+			auHit:stop() auHit:play()
+			self.status = 1
+		end
 
 	elseif self.status == 5 then -- hit by mountain
 		self.x = self.x - global_speed * dt * TRACK_SPEED * 1.5
@@ -98,9 +106,10 @@ function Player:kill(status)
 		return
 	end
 
-	scrn_shake = 0.25
-	auHit:stop()
-	auHit:play()
+	if status ~= 4 then
+		scrn_shake = 0.25
+		auHit:stop() auHit:play()
+	end
 
 	if coffee >= 5 then
 		self.invul = true
@@ -114,6 +123,11 @@ function Player:kill(status)
 				self.yspeed = -100
 			end
 		end
+	end
+
+	score = math.floor(score)
+	if score > highscore[difficulty] then
+		highscore[difficulty] = score
 	end
 end
 
@@ -160,7 +174,7 @@ function Player:collideWithTrain()
 end
 
 function Player:collideWithTunnel()
-	if tunnel.alive == false or self.invul == true then
+	if tunnel.alive == false then
 		return
 	end
 
@@ -173,15 +187,17 @@ function Player:collideWithTunnel()
 end
 
 function Player:collideWithBirds()
-	if self.invul == true then
-		return
-	end
-
 	for i,v in ipairs(birds) do
 		if Player.collideWithPoint(self,v.x+5.5,v.y+5) then
 			self:kill(1)
 			return
 		end
+	end
+end
+
+function Player:collideWithGorge()
+	if self.y >= 71 and self.x > gorge.x and self.x < gorge.x+105 then
+		self:kill(4)	
 	end
 end
 
@@ -199,6 +215,6 @@ end
 	1 = hit by train
 	2 = hit by bird
 	3 = inside train
-	4 = falling through ground? UNUSED
+	4 = falling through ground?
 	5 = hit by mountain
 --]]

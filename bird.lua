@@ -33,7 +33,7 @@ end
 function spawnBirds(dt)
 	next_bird = next_bird - dt
 	if next_bird <= 0 then
-		if train.type ~= 1 and train.x < WIDTH-100 then
+		if train.type ~= 1 and train.x < 200 and gorge.x < 100 then
 			table.insert(birds,Bird.create())
 		end
 		next_bird = math.random()/2

@@ -1,7 +1,9 @@
+require("table-save")
 require("player")
 require("cloud")
 require("train")
 require("tunnel")
+require("gorge")
 require("bird")
 require("terrain")
 require("menu")
@@ -24,12 +26,18 @@ gamestate = 1
 selection = 0
 submenu = 0
 
+highscore = {0,0,0}
+difficulty = 1
+difficulty_settings = {{1.5,0.03,2.5},{1.7,0.04,2.5},{2.25,0.06,3.1}}
+
 function love.load()
 	math.randomseed(os.time())
 	love.graphics.setBackgroundColor(bgcolor)
 
+	loadHighscore()
 	loadResources()
 	love.graphics.setFont(imgfont)
+
 	pl = Player.create()
 	updateScale()
 	restart()
@@ -41,14 +49,20 @@ function restart()
 	next_cloud = 0
 	birds = {}
 	next_bird = 1
-	global_speed = START_SPEED
 	track_frame = 0
 	scrn_shake = 0
+
+	START_SPEED = difficulty_settings[difficulty][1]
+	SPEED_INCREASE = difficulty_settings[difficulty][2]
+	MAX_SPEED = difficulty_settings[difficulty][3]
+	global_speed = START_SPEED
 
 	train = Train.create()
 	train.alive = false
 	tunnel = Tunnel.create()
 	tunnel.alive = false
+	gorge = Gorge.create()
+	gorge.alive = false
 
 	score = 0
 	coffee = 0
@@ -89,6 +103,9 @@ function updateGame(dt)
 	
 	-- Update tunnel
 	tunnel:update(dt)
+
+	-- Update gorge
+	gorge:update(dt)
 	
 	-- Update birds
 	spawnBirds(dt)
@@ -104,6 +121,7 @@ function updateGame(dt)
 		pl:collideWithTrain()
 		pl:collideWithTunnel()
 		pl:collideWithBirds()
+		pl:collideWithGorge()
 	end
 
 	-- Move railway tracks
@@ -123,10 +141,15 @@ function updateGame(dt)
 	-- Respawn train or tunnel
 	if train.alive == false then
 		if tunnel.alive == false then
-			if math.random(1,TUNNEL_PROBABILITY) == 1 then -- spawn tunnel
-				tunnel = Tunnel.create()
-			else -- spawn train
-				train = Train.createRandom()
+			if gorge.alive == false then
+				local banana = math.random(1,5)
+				if banana == 1 then -- spawn tunnel
+					tunnel = Tunnel.create()
+				elseif banana == 2 then
+					gorge = Gorge.create()
+				else
+					train = Train.createRandom()
+				end
 			end
 		else
 			if tunnel.x > WIDTH then
@@ -167,6 +190,9 @@ function drawGame()
 	-- Draw railroad tracks
 	drawTracks()
 
+	-- Draw gorge
+	gorge:draw()
+
 	-- Draw train
 	train:draw()
 
@@ -188,7 +214,8 @@ function drawGame()
 
 	-- Draw game over message
 	if pl.alive == false then
-		love.graphics.printf("you didn't make it to work\npress r to retry",0,45,WIDTH,"center")
+		love.graphics.printf("you didn't make it to work\npress r to retry",0,30,WIDTH,"center")
+		love.graphics.printf("your score: ".. score .. " - highscore: " .. highscore[difficulty],0,65,WIDTH,"center")
 	end
 
 	-- Draw pause message
@@ -219,19 +246,7 @@ function love.keypressed(key,unicode)
 				submenu = 2 -- Jumps straight to difficulty.
 				auSelect:stop() auSelect:play()
 			elseif submenu == 2 then  -- difficulty selection
-				if selection == 0 then  -- normal
-					START_SPEED = 1.5
-					SPEED_INCREASE = 0.03
-					MAX_SPEED = 2.25
-				elseif selection == 1 then -- hard
-					START_SPEED = 1.7
-					SPEED_INCREASE = 0.04
-					MAX_SPEED = 2.5
-				else -- OH GOD
-					START_SPEED = 2.25 
-					SPEED_INCREASE = 0.06
-					MAX_SPEED = 3.1
-				end
+				difficulty = selection+1
 				auSelect:stop() auSelect:play()
 				gamestate = 0
 				restart()
@@ -288,13 +303,35 @@ function loadResources()
 
 	fontimg = love.graphics.newImage("gfx/imgfont.png")
 	fontimg:setFilter("nearest","nearest")
-	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-·")
+	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-:·")
 	imgfont:setLineHeight(2)
 
 	-- Load sound effects
 	auCoffee = love.audio.newSource("sfx/coffee.wav","static")
 	auHit = love.audio.newSource("sfx/hit.wav","static")
 	auSelect = love.audio.newSource("sfx/select.wav","static")
+end
+
+function loadHighscore()
+	if love.filesystem.exists("highscore") then
+		local data = love.filesystem.read("highscore")
+		if data ~=nil then
+			local datatable = table.load(data)
+			if #datatable == #highscore then
+				highscore = datatable
+			end
+		end
+	end
+end
+
+function saveHighscore()
+	local datatable = table.save(highscore)
+	love.filesystem.write("highscore",datatable)
+end
+
+function love.quit()
+	saveHighscore()
+	-- print(exit_message)
 end
 
 --[[

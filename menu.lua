@@ -27,10 +27,6 @@ function drawMenu()
 	end
 end
 
-function love.quit()
-	print(exit_message)
-end
-
 exit_message = [[           _______________
           /               \
          |  Thank you for  | 

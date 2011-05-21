@@ -1,7 +1,6 @@
 Tunnel = {}
 Tunnel.__index = Tunnel
 
-TUNNEL_PROBABILITY = 4
 tunnel_start_back = love.graphics.newQuad(0,0,58,100,512,512)
 tunnel_end = love.graphics.newQuad(58,0,133,100,512,512)
 
