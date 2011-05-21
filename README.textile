@@ -11,3 +11,4 @@ h2. Controls
 * R: Restart
 * 1-4: Set zoom
 * P: Pause game
+* M: Mute sound
