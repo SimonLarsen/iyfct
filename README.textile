@@ -10,3 +10,4 @@ h2. Controls
 * Space: Jump
 * R: Restart
 * 1-4: Set zoom
+* P: Pause game
