@@ -196,7 +196,7 @@ function Player:collideWithBirds()
 end
 
 function Player:collideWithGorge()
-	if self.y >= 71 and self.x > gorge.x and self.x < gorge.x+105 then
+	if self.y >= 71 and self.x > gorge.x+2 and self.x < gorge.x+92 then
 		self:kill(4)	
 	end
 end

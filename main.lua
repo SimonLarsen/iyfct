@@ -21,7 +21,8 @@ SPEED_INCREASE = 0.04
 START_SPEED = 1.7
 MAX_SPEED = 2.5
 
-track_quad = love.graphics.newQuad(0,48,121,5,128,128)
+pause = false
+mute = false
 gamestate = 1
 selection = 0
 submenu = 0
@@ -29,6 +30,8 @@ submenu = 0
 highscore = {0,0,0}
 difficulty = 1
 difficulty_settings = {{1.5,0.03,2.5},{1.7,0.04,2.5},{2.25,0.06,3.1}}
+
+use_music = true
 
 function love.load()
 	math.randomseed(os.time())
@@ -66,7 +69,6 @@ function restart()
 
 	score = 0
 	coffee = 0
-	pause = false
 end
 
 function love.update(dt)
@@ -267,7 +269,17 @@ function love.keypressed(key,unicode)
 		end
 		auSelect:stop() auSelect:play()
 	elseif key == 'p' then
-		pause = not pause
+		if gamestate == 0 and pl.alive == true then
+			pause = not pause
+		end
+	elseif key == 'm' then
+		if mute == false then
+			mute = true
+			love.audio.setVolume(0.0)
+		else
+			mute = false
+			love.audio.setVolume(1.0)
+		end
 	elseif key == '1' then
 		SCALE = 1
 		updateScale()
@@ -312,6 +324,12 @@ function loadResources()
 	auCoffee = love.audio.newSource("sfx/coffee.wav","static")
 	auHit = love.audio.newSource("sfx/hit.wav","static")
 	auSelect = love.audio.newSource("sfx/select.wav","static")
+	if use_music == true then
+		auBGM = love.audio.newSource("sfx/bgm.ogg","stream")
+		auBGM:setLooping(true)
+		auBGM:setVolume(0.6)
+		auBGM:play()
+	end
 end
 
 function loadHighscore()
@@ -337,7 +355,7 @@ function love.quit()
 end
 
 function love.focus(f)
-	if not f then
+	if not f and gamestate == 0 and pl.alive == true then
 		pause = true
 	end
 end
