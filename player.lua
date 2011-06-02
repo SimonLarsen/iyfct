@@ -7,6 +7,11 @@ PLAYER_WIDTH = 14
 PLAYER_HEIGHT = 21
 PLAYER_START_X = 54
 
+player_frames = {}
+for i=0,5 do
+	player_frames[i] = love.graphics.newQuad(15*i,0,15,21,128,128)
+end
+
 function Player.create()
 	local self = {}
 	setmetatable(self,Player)
@@ -86,18 +91,16 @@ function Player:update(dt)
 end
 
 function Player:draw()
-	local frame = 15*math.floor(self.frame)
-	local quad = love.graphics.newQuad(frame,0,15,21,128,128)
 	if self.status == 0 then
 		if self.invul == false or math.floor(self.frame) % 2 == 0 then
-			love.graphics.drawq(imgSprites,quad,self.x,self.y)
+			love.graphics.drawq(imgSprites,player_frames[math.floor(self.frame)],self.x,self.y)
 		end
 
 	elseif self.status == 1 or self.status == 5 then
-		love.graphics.drawq(imgSprites,quad,self.x,self.y, -self.x/10, 1,1,7,10)
+		love.graphics.drawq(imgSprites,player_frames[math.floor(self.frame)],self.x,self.y, -self.x/10, 1,1,7,10)
 
 	else -- default case
-		love.graphics.drawq(imgSprites,quad,self.x,self.y)
+		love.graphics.drawq(imgSprites,player_frames[math.floor(self.frame)],self.x,self.y)
 	end
 end
 
