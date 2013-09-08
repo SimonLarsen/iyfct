@@ -262,7 +262,7 @@ function love.keypressed(key,unicode)
 			selection = 0
 		elseif gamestate == 1 then
 			if submenu == 0 then
-				love.event.push("q")
+				love.event.quit()
 			elseif submenu == 2 then
 				submenu = 0
 			end
@@ -317,7 +317,7 @@ function loadResources()
 
 	fontimg = love.graphics.newImage("gfx/imgfont.png")
 	fontimg:setFilter("nearest","nearest")
-	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-:·")
+	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-:*")
 	imgfont:setLineHeight(2)
 
 	-- Load sound effects
@@ -351,7 +351,6 @@ end
 
 function love.quit()
 	saveHighscore()
-	-- print(exit_message)
 end
 
 function love.focus(f)

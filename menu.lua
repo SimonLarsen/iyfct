@@ -19,22 +19,10 @@ function drawMenu()
 
 		for i = 0,2 do
 			if i == selection then
-				love.graphics.printf("·"..menu_difficulties[i+1].."·",0,42+i*13,WIDTH,"center")
+				love.graphics.printf("* "..menu_difficulties[i+1].." *",0,42+i*13,WIDTH,"center")
 			else
 				love.graphics.printf(menu_difficulties[i+1],0,42+i*13,WIDTH,"center")
 			end
 		end
 	end
 end
-
-exit_message = [[           _______________
-          /               \
-         |  Thank you for  | 
-   .---. |  playing IYFCT  |
-   |,__|  \  _____________/
-   |o o|   |/
-  _| O |_|
- | |\|/|
-   |___|
-   \/ \
-       \ ]]
