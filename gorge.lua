@@ -22,5 +22,5 @@ function Gorge:update(dt)
 end
 
 function Gorge:draw()
-	love.graphics.drawq(imgTerrain,gorge_quad,self.x-7,92)
+	love.graphics.draw(imgTerrain,gorge_quad,self.x-7,92)
 end

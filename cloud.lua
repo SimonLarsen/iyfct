@@ -27,7 +27,7 @@ function Cloud:draw()
 		quad = love.graphics.newQuad(48+self.type*32,32,32,16,128,128)
 	end
 	if quad ~= nil then
-		love.graphics.drawq(imgSprites,quad,self.x,self.y)
+		love.graphics.draw(imgSprites,quad,self.x,self.y)
 	end
 end
 

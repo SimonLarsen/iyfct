@@ -228,7 +228,7 @@ function drawGame()
 	-- Draw coffee meter
 	local cquad = love.graphics.newQuad(48+math.floor(coffee)*9,64,9,9,128,128)
 	if coffee < 5 or pl.frame < 4 then
-		love.graphics.drawq(imgSprites,cquad,284,7)
+		love.graphics.draw(imgSprites,cquad,284,7)
 	end
 end
 
@@ -298,7 +298,7 @@ end
 function updateScale()
 	SCRNWIDTH = WIDTH*SCALE
 	SCRNHEIGHT = HEIGHT*SCALE
-	love.graphics.setMode(SCRNWIDTH,SCRNHEIGHT,false)
+	love.window.setMode(SCRNWIDTH,SCRNHEIGHT,{fullscreen=false})
 end
 
 function loadResources()

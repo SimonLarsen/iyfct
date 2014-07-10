@@ -52,15 +52,15 @@ function Train:draw()
 	end
 
 	if self.type == 1 then -- closed train
-		love.graphics.drawq(imgTrains,normal_train_quad,self.x,self.y)
+		love.graphics.draw(imgTrains,normal_train_quad,self.x,self.y)
 	elseif self.type == 2 then -- open train
 		if pl.status == 3 then -- inside
-			love.graphics.drawq(imgTrains,inside_train_quad,self.x-7,self.y)
+			love.graphics.draw(imgTrains,inside_train_quad,self.x-7,self.y)
 			if self.hasCoffee == true then
-				love.graphics.drawq(imgSprites,coffee_cup_quad,self.x+54,self.y+8)
+				love.graphics.draw(imgSprites,coffee_cup_quad,self.x+54,self.y+8)
 			end
 		else -- outside
-			love.graphics.drawq(imgTrains,open_train_quad,self.x-7,self.y)
+			love.graphics.draw(imgTrains,open_train_quad,self.x-7,self.y)
 		end
 	end
 end

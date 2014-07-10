@@ -93,14 +93,14 @@ end
 function Player:draw()
 	if self.status == 0 then
 		if self.invul == false or math.floor(self.frame) % 2 == 0 then
-			love.graphics.drawq(imgSprites,player_frames[math.floor(self.frame)],self.x,self.y)
+			love.graphics.draw(imgSprites,player_frames[math.floor(self.frame)],self.x,self.y)
 		end
 
 	elseif self.status == 1 or self.status == 5 then
-		love.graphics.drawq(imgSprites,player_frames[math.floor(self.frame)],self.x,self.y, -self.x/10, 1,1,7,10)
+		love.graphics.draw(imgSprites,player_frames[math.floor(self.frame)],self.x,self.y, -self.x/10, 1,1,7,10)
 
 	else -- default case
-		love.graphics.drawq(imgSprites,player_frames[math.floor(self.frame)],self.x,self.y)
+		love.graphics.draw(imgSprites,player_frames[math.floor(self.frame)],self.x,self.y)
 	end
 end
 

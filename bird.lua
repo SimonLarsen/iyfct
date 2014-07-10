@@ -27,7 +27,7 @@ function Bird:update(dt)
 end
 
 function Bird:draw()
-	love.graphics.drawq(imgSprites,bird_frames[math.floor(self.frame)],self.x,self.y)
+	love.graphics.draw(imgSprites,bird_frames[math.floor(self.frame)],self.x,self.y)
 end
 
 function spawnBirds(dt)

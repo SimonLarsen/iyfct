@@ -26,12 +26,12 @@ end
 
 function Tunnel:drawBack()
 	if self.alive == true then
-		love.graphics.drawq(imgTerrain,tunnel_start_back,self.x-58,0)
+		love.graphics.draw(imgTerrain,tunnel_start_back,self.x-58,0)
 	end
 end
 
 function Tunnel:drawFront()
 	if self.alive == true then
-		love.graphics.drawq(imgTerrain,tunnel_end,self.x,0)
+		love.graphics.draw(imgTerrain,tunnel_end,self.x,0)
 	end
 end
