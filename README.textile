@@ -9,6 +9,6 @@ h2. Controls
 
 * Space: Jump
 * R: Restart
-* 1-4: Set zoom
+* 1-4 or F1-F4: Set zoom
 * P: Pause game
 * M: Mute sound
