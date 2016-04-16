@@ -292,6 +292,12 @@ function love.keypressed(key,scancode)
 	elseif scancode == '4' or key == 'kp4' or key == 'f4' then
 		SCALE = 4
 		updateScale()
+	elseif scancode == '5' or key == 'kp5' or key == 'f5' then
+		SCALE = 5
+		updateScale()
+	elseif scancode == '6' or key == 'kp6' or key == 'f6' then
+		SCALE = 6
+		updateScale()
 	end
 end
 
