@@ -33,7 +33,7 @@ end
 
 function Player:update(dt)
 	-- Check keyboard input
-	if love.keyboard.isDown(' ') and self.onGround == true then
+	if love.keyboard.isDown('space') and self.onGround == true then
 		self.yspeed = JUMP_POWER
 		self.onGround = false
 	end

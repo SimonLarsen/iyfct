@@ -232,8 +232,8 @@ function drawGame()
 	end
 end
 
-function love.keypressed(key,unicode)
-	if key == ' ' then -- will be space most of the time
+function love.keypressed(key,scancode)
+	if key == 'space' then
 		return         -- avoid unnecessary checks
 	elseif key == 'r' then
 		restart()
@@ -280,17 +280,23 @@ function love.keypressed(key,unicode)
 			mute = false
 			love.audio.setVolume(1.0)
 		end
-	elseif key == '1' or key == 'kp1' or key == 'f1' then
+	elseif scancode == '1' or key == 'kp1' or key == 'f1' then
 		SCALE = 1
 		updateScale()
-	elseif key == '2' or key == 'kp2' or key == 'f2' then
+	elseif scancode == '2' or key == 'kp2' or key == 'f2' then
 		SCALE = 2
 		updateScale()
-	elseif key == '3' or key == 'kp3' or key == 'f3' then
+	elseif scancode == '3' or key == 'kp3' or key == 'f3' then
 		SCALE = 3
 		updateScale()
-	elseif key == '4' or key == 'kp4' or key == 'f4' then
+	elseif scancode == '4' or key == 'kp4' or key == 'f4' then
 		SCALE = 4
+		updateScale()
+	elseif scancode == '5' or key == 'kp5' or key == 'f5' then
+		SCALE = 5
+		updateScale()
+	elseif scancode == '6' or key == 'kp6' or key == 'f6' then
+		SCALE = 6
 		updateScale()
 	end
 end
@@ -317,7 +323,7 @@ function loadResources()
 
 	fontimg = love.graphics.newImage("gfx/imgfont.png")
 	fontimg:setFilter("nearest","nearest")
-	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-:*")
+	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-:*", 1)
 	imgfont:setLineHeight(2)
 
 	-- Load sound effects

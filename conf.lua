@@ -1,6 +1,6 @@
 function love.conf(t)
     t.identity = "iyfct"
-    t.version = "0.9.1"
+    t.version = "0.10.0"
     t.console = false
 
     t.window.title = "In Your Face City Trains"
