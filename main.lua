@@ -323,7 +323,7 @@ function loadResources()
 
 	fontimg = love.graphics.newImage("gfx/imgfont.png")
 	fontimg:setFilter("nearest","nearest")
-	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-:*")
+	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-:*", 1)
 	imgfont:setLineHeight(2)
 
 	-- Load sound effects
