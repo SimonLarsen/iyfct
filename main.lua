@@ -321,9 +321,8 @@ function loadResources()
 	imgSplash = love.graphics.newImage("gfx/splash.png")
 	imgSplash:setFilter("nearest","nearest")
 
-	fontimg = love.graphics.newImage("gfx/imgfont.png")
-	fontimg:setFilter("nearest","nearest")
-	imgfont = love.graphics.newImageFont(fontimg," abcdefghijklmnopqrstuvwxyz0123456789.!'-:*", 1)
+	imgfont = love.graphics.newImageFont("gfx/imgfont.png"," abcdefghijklmnopqrstuvwxyz0123456789.!'-:*", 1)
+	imgfont:setFilter("nearest","nearest")
 	imgfont:setLineHeight(2)
 
 	-- Load sound effects
@@ -339,7 +338,7 @@ function loadResources()
 end
 
 function loadHighscore()
-	if love.filesystem.exists("highscore") then
+	if love.filesystem.getInfo("highscore") then
 		local data = love.filesystem.read("highscore")
 		if data ~=nil then
 			local datatable = table.load(data)
