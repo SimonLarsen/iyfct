@@ -12,8 +12,8 @@ WIDTH = 300
 HEIGHT = 100
 SCALE = 3
 
-bgcolor = {236,243,201,255}
-darkcolor = {2,9,4,255}
+bgcolor = {236/255,243/255,201/255,1}
+darkcolor = {2/255,9/255,4/255,1}
 
 TRACK_SPEED = 150
 
@@ -164,7 +164,7 @@ end
 
 function love.draw()
 	love.graphics.scale(SCALE,SCALE)
-	love.graphics.setColor(255,255,255,255)
+	love.graphics.setColor(1,1,1,1)
 	if gamestate == 0 then
 		drawGame()
 	elseif gamestate == 1 then
@@ -199,7 +199,7 @@ function drawGame()
 	train:draw()
 
 	-- Draw player
-	love.graphics.setColor(255,255,255,255)
+	love.graphics.setColor(1,1,1,1)
 	pl:draw()
 
 	-- Draw front of tunnel
